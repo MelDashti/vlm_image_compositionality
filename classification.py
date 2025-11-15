@@ -275,7 +275,23 @@ def compute_weights(embs_for_IW, all_pairs_IW, train_dataset, use_clip_score=Fal
 def main(config: argparse.Namespace, verbose=False):
     if config.experiment_name != 'clip' and config.modality_IW is None:
         raise Exception("Argument --modality_IW is required when --experiment_name!='clip'.")
-    
+
+    # Validate DINOv2 configuration
+    is_dinov2 = config.model_architecture.startswith('dinov2')
+    if is_dinov2:
+        if config.experiment_name == 'clip':
+            raise ValueError(
+                "Cannot use --experiment_name 'clip' with DINOv2 models. "
+                "DINOv2 is vision-only and has no text encoder. "
+                "Use --experiment_name 'GDE' or 'LDE' with --modality_IW 'image' instead."
+            )
+        if config.modality_IW in ['text', 'valid text']:
+            raise ValueError(
+                f"Cannot use --modality_IW '{config.modality_IW}' with DINOv2 models. "
+                "DINOv2 is vision-only and has no text encoder. "
+                "Use --modality_IW 'image' instead."
+            )
+
     device = "cuda:0" if torch.cuda.is_available() else "cpu"
     set_seed(42)    # Set seed for reproducibility. Effective if config.modality_IW='image' and config.n_images!=None.
     

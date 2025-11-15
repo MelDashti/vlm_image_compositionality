@@ -232,6 +232,8 @@ class CompositionDataset(Dataset):
 class CompositionDatasetEmbeddings(CompositionDataset):
     '''
     Class for loading pre-computed embeddings of a compositional dataset.
+
+    Supports both vision-language models (CLIP, OpenCLIP) and vision-only models (DINOv2).
     '''
     def __init__(
             self,
@@ -244,15 +246,38 @@ class CompositionDatasetEmbeddings(CompositionDataset):
             normalize: bool=True,
             ):
         super().__init__(root, phase, split, open_world)
-        loadfile_id = f"emb_{model_architecture}_{model_pretraining}.pt"
-        self.text_embs_path = os.path.join(root, 'TEXT' + loadfile_id)
-        self.image_embs_path = os.path.join(root, 'IMG' + loadfile_id)
+
+        # Check if model is DINOv2 (vision-only, no text encoder)
+        self.is_dinov2 = model_architecture.startswith('dinov2')
+
+        if self.is_dinov2:
+            # DINOv2: Only image embeddings, no text embeddings
+            loadfile_id = f"emb_{model_architecture}_{model_pretraining}.pt"
+            self.image_embs_path = os.path.join(root, 'IMG' + loadfile_id)
+            self.text_embs_path = None
+            self.has_text_embeddings = False
+        else:
+            # CLIP/OpenCLIP: Both image and text embeddings
+            loadfile_id = f"emb_{model_architecture}_{model_pretraining}.pt"
+            self.text_embs_path = os.path.join(root, 'TEXT' + loadfile_id)
+            self.image_embs_path = os.path.join(root, 'IMG' + loadfile_id)
+            self.has_text_embeddings = True
+
         self.normalize = normalize
     
     def load_text_embs(self, pairs):
         '''
         Loads text embeddings for given pairs.
+
+        Note: This method is not available for DINOv2 models (vision-only).
         '''
+        if self.is_dinov2:
+            raise ValueError(
+                "Text embeddings are not available for DINOv2 models. "
+                "DINOv2 is a vision-only model without a text encoder. "
+                "Use --modality_IW 'image' for image-based ideal words instead."
+            )
+
         text_embs_data = torch.load(self.text_embs_path, weights_only=False)  # All text embeddings
         pair2idx = defaultdict(list)
         for i, pair in enumerate(text_embs_data['pairs']):
