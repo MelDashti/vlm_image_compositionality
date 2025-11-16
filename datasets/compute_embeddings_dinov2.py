@@ -69,7 +69,7 @@ def get_dinov2_model(model_size='vit_large', device='cuda'):
     model = model.to(device)
     model.eval()
 
-    print(f"✓ Model loaded successfully on {device}")
+    print(f"OK Model loaded successfully on {device}")
     return model, model_name
 
 
@@ -143,7 +143,7 @@ def compute_dinov2_embeddings(dataset_name, model_size='vit_large', batch_size=6
             return output_path
         else:
             os.remove(output_path)
-            print("✓ Deleted existing file. Recomputing...")
+            print("OK Deleted existing file. Recomputing...")
 
     # Extract image paths and labels
     all_images, all_attrs, all_objs = zip(*dataset.data)
@@ -219,7 +219,7 @@ def compute_dinov2_embeddings(dataset_name, model_size='vit_large', batch_size=6
     # Concatenate all batches
     image_embeddings = torch.cat(image_embeddings, dim=0)
 
-    print(f"\n✓ Extracted {len(all_images)} embeddings")
+    print(f"\nOK Extracted {len(all_images)} embeddings")
     print(f"Embedding shape: {image_embeddings.shape}")
     print(f"Embedding dim: {image_embeddings.shape[1]}")
 
@@ -234,7 +234,7 @@ def compute_dinov2_embeddings(dataset_name, model_size='vit_large', batch_size=6
         'pairs': all_pairs
     }, output_path)
 
-    print(f"\n✓ Saved embeddings to: {output_path}")
+    print(f"\nOK Saved embeddings to: {output_path}")
     print(f"File size: {os.path.getsize(output_path) / 1e6:.1f} MB")
 
     return output_path
