@@ -30,6 +30,8 @@ conda activate img_comp
 ```
 sh utils/download_classification_data.sh
 ```
+
+**Note:** The original compositional split URL is currently unavailable. The download script automatically falls back to the CAILA mirror (Google Drive) and extracts split files from metadata using `extract_splits_from_metadata.py`. This ensures you get the same standard splits used across all CZSL research.
 - Compute the VLM embeddings and store them in the correct directory:
 ```
 python -m datasets.compute_embeddings 'mit-states' 'ViT-L-14' 'openai'
