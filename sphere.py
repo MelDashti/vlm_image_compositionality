@@ -77,7 +77,7 @@ def weighted_mean(embeddings, weights=None):
         return weights @ embeddings / weights.sum()
         
 
-def calculate_intrinstic_mean(data, weights=None, lr=1.000, init=None, eps=1e-5, max_iter=10):
+def calculate_intrinstic_mean(data, weights=None, lr=1.000, init=None, eps=1e-5, max_iter=100):
     """Calculate the weighted intrinsic mean of `embeddings`. The `weights` are normalized.""" 
     if data.shape[0]==1:
       return data.squeeze()
