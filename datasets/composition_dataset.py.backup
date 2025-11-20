@@ -141,7 +141,7 @@ class CompositionDataset(Dataset):
         train_data, val_data, test_data = [], [], []
         pairs = set(self.pairs)
         for instance in data:
-            image, attr, obj, settype = instance.get('_image', instance['image']), instance[
+            image, attr, obj, settype = instance['image'], instance[
                 'attr'], instance['obj'], instance['set']
 
             if attr == 'NA' or (attr,
