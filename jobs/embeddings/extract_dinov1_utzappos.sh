@@ -31,7 +31,7 @@ echo ""
 cd /home/s3767876/analysis/vlm_image_compositionality
 
 echo "Extracting DINOv1 embeddings for UT-Zappos..."
-python -m datasets.compute_embeddings_dinov1 ut-zappos --model_name dino_vitb16 --batch_size 64
+python -m datasets.compute_embeddings_dinov1 ut-zappos --model dino_vitb16 --batch_size 64
 
 echo ""
 echo "End time: $(date)"
